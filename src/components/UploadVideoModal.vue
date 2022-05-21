@@ -7,11 +7,9 @@
   >
     <v-card>
       <div class="d-flex justify-space-between mb-5" id="modal-header">
-        <v-card-title class="py-3">Upload Video</v-card-title>
+        <v-card-title class="py-3">上传视频</v-card-title>
         <div class="mt-3 mr-2">
-          <v-btn text>
-            Upload With Classic
-          </v-btn>
+          <v-btn text> 上传至分类 </v-btn>
           <v-btn icon text @click="closeModal">
             <v-icon>mdi-close</v-icon>
           </v-btn>
@@ -27,7 +25,7 @@
             <v-btn
               icon
               class="grey lighten-2 mb-4"
-              style="height: 104px;width: 104px;"
+              style="height: 104px; width: 104px"
               @click="selectFile"
               ><v-icon x-large class="grey--text text--darken-1"
                 >mdi-upload</v-icon
@@ -44,7 +42,7 @@
             <v-file-input
               @change="uploadVideo"
               accept="video/mp4"
-              placeholder="Pick an video"
+              placeholder="选择一个视频"
               prepend-icon="mdi-video"
               :error-messages="errors"
               ref="fileInput"
@@ -55,7 +53,7 @@
             depressed
             @click="$refs.fileInput.$refs.input.click()"
             class="blue darken-3 flat white--text mt-4"
-            >Select File</v-btn
+            >选择文件</v-btn
           >
         </div>
 
@@ -71,7 +69,7 @@
         </v-progress-circular>
       </v-card-text>
       <v-card-text v-else>
-        <h2 class="mb-6">Details</h2>
+        <h2 class="mb-6">详情</h2>
         <v-row>
           <v-col
             order="last"
@@ -192,9 +190,8 @@
       </v-card-text>
       <v-card-actions v-if="!uploaded">
         <p class="text-center grey--text caption px-12 px-xs-0">
-          By submitting your videos to YouTube, you acknowledge that you agree
-          to YouTube's Terms of Service and Community Guidelines. Please be sure
-          not to violate others' copyright or privacy rights. Learn more
+          向 iShare 提交视频，即表示您确认同意 iShare
+          的服务条款和社区准则。请勿侵犯他人的版权或隐私权。了解详情
         </p>
       </v-card-actions>
     </v-card>
@@ -202,11 +199,11 @@
 </template>
 
 <script>
-import myUpload from 'vue-image-crop-upload'
+import myUpload from "vue-image-crop-upload";
 export default {
-  name: 'UploadModal',
-  props: ['openDialog'],
-  data: function() {
+  name: "UploadModal",
+  props: ["openDialog"],
+  data: function () {
     return {
       // dialog: this.openDialog ? this.openDialog : false,
       valid: false,
@@ -219,73 +216,73 @@ export default {
         (value) =>
           !value ||
           value.size < 5000000 ||
-          'Video size should be less than 5 MB!'
+          "Video size should be less than 5 MB!",
       ],
-      categories: ['People', 'Technology', 'Fashion'],
-      visibilty: ['Public', 'Private'],
+      categories: ["People", "Technology", "Fashion"],
+      visibilty: ["Public", "Private"],
       formData: {
-        title: '',
-        description: '',
-        category: '',
-        visibilty: ''
+        title: "",
+        description: "",
+        category: "",
+        visibilty: "",
       },
-      imgDataUrl: '',
+      imgDataUrl: "",
       params: {
-        token: '123456798',
-        name: 'avatar'
+        token: "123456798",
+        name: "avatar",
       },
       headers: {
-        smail: '*_~'
-      }
-    }
+        smail: "*_~",
+      },
+    };
   },
   computed: {
     dialog() {
-      return this.openDialog
-    }
+      return this.openDialog;
+    },
   },
   methods: {
     async uploadVideo(e) {
-      const { valid } = await this.$refs.provider.validate(e)
+      // const { valid } = await this.$refs.provider.validate(e);
 
-      if (!valid) return
+      // if (!valid) return;
       // TODO: Upload the file
-      this.uploading = true
+      this.uploading = true;
       this.interval = setInterval(() => {
         if (this.value === 100) {
-          this.uploaded = true
-          clearInterval(this.interval)
+          this.uploaded = true;
+          clearInterval(this.interval);
         }
-        this.value += 10
-      }, 1000)
+        this.value += 10;
+      }, 1000);
       // }
       // }
     },
     submit() {
-      if (this.$route.name === 'Dashboard')
-        return this.$router.push('/studio/videos')
-      console.log('submittied')
-      this.closeModal()
+      if (this.$route.name === "Dashboard")
+        return this.$router.push("/studio/videos");
+      console.log("submittied");
+      this.closeModal();
     },
     closeModal() {
-      this.$emit('closeDialog')
+      this.$emit("closeDialog");
     },
     selectFile() {
-      this.$refs.fileInput.$refs.input.click()
+      this.$refs.fileInput.$refs.input.click();
     },
     toggleShow() {
-      this.show = !this.show
+      this.show = !this.show;
     },
     cropSuccess(imgDataUrl, field) {
-      console.log('-------- crop success --------')
-      console.log(field)
-      this.imgDataUrl = imgDataUrl
-    }
+      console.log("-------- crop success --------");
+      console.log(field);
+      this.imgDataUrl = imgDataUrl;
+    },
   },
   components: {
-    myUpload
-  }
-}
+    myUpload,
+  },
+};
 </script>
 
 <style lang="scss">

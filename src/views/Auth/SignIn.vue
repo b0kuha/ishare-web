@@ -1,62 +1,52 @@
 <template>
-  <v-container fluid class="fill-height">
+  <v-container class="fill-height" fluid>
     <v-row>
-      <v-col cols="12" xs="12" sm="6" md="5" lg="4" class="ma-auto">
+      <v-col class="ma-auto" cols="12" lg="4" md="5" sm="6" xs="12">
         <v-card class="px-8 pt-6 pb-12" outlined>
-          <v-card-title class="text-center">VueTube</v-card-title>
-          <v-card-subtitle class="mb-5">Sign in</v-card-subtitle>
+          <v-card-title class="text-center">iShare</v-card-title>
+          <v-card-subtitle class="mb-5">登录</v-card-subtitle>
           <v-card-text>
             <ValidationObserver ref="form" v-slot="{ handleSubmit, reset }">
-              <form
-                @submit.prevent="handleSubmit(signin)"
-                @reset.prevent="reset"
-              >
-                <ValidationProvider
-                  v-slot="{ errors }"
-                  name="Email"
-                  rules="required|email"
-                >
-                  <v-text-field
-                    v-model="email"
-                    :error-messages="errors"
-                    label="Email"
-                    outlined
-                  ></v-text-field>
+              <form @submit.prevent="handleSubmit(signin)"
+                    @reset.prevent="reset">
+                <ValidationProvider v-slot="{ errors }"
+                                    name="Email"
+                                    rules="required|email">
+                  <v-text-field v-model="email"
+                                :error-messages="errors"
+                                label="邮箱"
+                                outlined>
+                  </v-text-field>
                 </ValidationProvider>
-                <ValidationProvider
-                  v-slot="{ errors }"
-                  name="Password"
-                  rules="required"
-                >
+                <ValidationProvider v-slot="{ errors }"
+                                    name="Password"
+                                    rules="required">
                   <p class="ma-0 text-right">
-                    <v-btn
-                      text
-                      small
-                      class="pl-0 text-capitalize"
-                      color="primary"
-                      href="true"
-                      >Forget Password?</v-btn
-                    >
+                    <v-btn class="pl-0 text-capitalize"
+                           color="primary"
+                           href="true"
+                           small
+                           text>
+                      忘记密码?
+                    </v-btn>
                   </p>
-                  <v-text-field
-                    v-model="password"
-                    type="password"
-                    :error-messages="errors"
-                    label="Password"
-                    outlined
-                  ></v-text-field>
+                  <v-text-field v-model="password"
+                                :error-messages="errors"
+                                label="密码"
+                                outlined
+                                type="password">
+                  </v-text-field>
                 </ValidationProvider>
                 <div class="mt-6 d-flex justify-space-between">
-                  <v-btn
-                    text
-                    small
-                    class="pl-0 text-capitalize"
-                    color="primary"
-                    router
-                    to="signup"
-                    >Create account</v-btn
-                  >
-                  <v-btn type="submit" class="primary" depressed>Sign in</v-btn>
+                  <v-btn class="pl-0 text-capitalize"
+                         color="primary"
+                         router
+                         small
+                         text
+                         to="signup">
+                    注册
+                  </v-btn>
+                  <v-btn class="primary" depressed type="submit">登录</v-btn>
                 </div>
               </form>
             </ValidationObserver>
@@ -71,15 +61,23 @@
 export default {
   name: 'SignIn',
   data: () => ({
-    email: '',
-    password: ''
+    email: 'ali@qq.com',
+    password: '123456',
   }),
   methods: {
-    signin() {
-      console.log('hello')
+    async signin() {
+      await this.$store.dispatch('user/login', {email: this.email, password: this.password})
+      await this.$store.dispatch('user/getInfo')
+      this.$router.push('/')
+    },
+  },
+  mounted() {
+    if (this.$route.params) {
+      this.email = this.$route.params.email
+      this.password = this.$route.params.password
     }
-  }
-}
+  },
+};
 </script>
 
 <style></style>

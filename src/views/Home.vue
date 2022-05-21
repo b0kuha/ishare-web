@@ -1,60 +1,26 @@
 <template>
   <div id="home" class="pa-4">
     <v-container fluid>
-      <h3 class="headline font-weight-medium">Recommended</h3>
+      <h3 class="headline font-weight-medium">推荐</h3>
       <v-row>
         <v-col
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
-          v-for="i in loading ? 10 : 12"
-          :key="i"
+          v-for="item in movieList"
+          :key="item._id"
           class="mx-xs-auto"
+          cols="12"
+          lg="3"
+          md="4"
+          sm="6"
         >
-          <v-skeleton-loader type="card-avatar" :loading="loading">
-            <video-card
-              :card="{ maxWidth: 350 }"
-              :video="video"
-              :channel="channel"
-            ></video-card>
-            <!-- <v-card
-              class="content-bg card mx-auto"
-              max-width="350"
-              flat
-              tile
-              router
-              to="/watch/12"
-            >
-              <v-img
-                src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                height="200px"
-              ></v-img>
-              <v-row no-gutters>
-                <v-col cols="2">
-                  <v-list-item class="pl-0 pt-3" router to="/channels/12">
-                    <v-list-item-avatar color="grey darken-3">
-                      <v-img
-                        class="elevation-6"
-                        src="https://randomuser.me/api/portraits/men/1.jpg"
-                      ></v-img>
-                    </v-list-item-avatar>
-                  </v-list-item>
-                </v-col>
-                <v-col>
-                  <v-card-title class="pl-2 pt-3 subtitle-1 font-weight-bold">
-                    Top western road trips
-                  </v-card-title>
-
-                  <v-card-subtitle class="pl-2 pb-0">
-                    1,000 miles of wonder
-                  </v-card-subtitle>
-                  <v-card-subtitle class="pl-2 pt-0">
-                    9.6k views<v-icon>mdi-circle-small</v-icon>6 hours ago
-                  </v-card-subtitle>
-                </v-col>
-              </v-row>
-            </v-card> -->
+          <v-skeleton-loader :loading="loading" type="card-avatar">
+            <v-hover>
+              <video-card
+                :card="{ maxWidth: 350 }"
+                :channel="channel"
+                :video="item"
+              >
+              </video-card>
+            </v-hover>
           </v-skeleton-loader>
         </v-col>
       </v-row>
@@ -63,33 +29,64 @@
 </template>
 
 <script>
-import videoCard from '@/components/VideoCard'
+import videoCard from "@/components/VideoCard";
+import { getMovieList } from "@/api/movie";
 
 export default {
-  name: 'Home',
+  name: "Home",
   data: () => ({
     loading: true,
-    video: {
-      url: '/watch/12',
-      thumb: 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
-      title: 'Top western road trips',
-      views: '9.6k',
-      createdAt: '6 hours ago'
-    },
+    movieList: [],
     channel: {
-      url: '/channels/12',
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
-    }
+      url: "/channels/12",
+      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    },
+    pageParams: {
+      total: 0,
+      current: 1,
+      size: 16,
+    },
   }),
   components: {
-    videoCard
+    videoCard,
   },
   mounted() {
-    setTimeout(() => {
-      this.loading = false
-    }, 3000)
-  }
-}
+    this.fetchMovieList();
+  },
+  methods: {
+    async fetchMovieList() {
+      let params = {
+        where: {
+          status: true,
+        },
+        limit: this.pageParams.size,
+        skip: (this.pageParams.current - 1) * this.pageParams.size,
+      };
+      this.loading = true;
+      try {
+        const res = await getMovieList(JSON.stringify(params));
+        this.movieList = res.data;
+        this.movieList = this.movieList.map((item) => {
+          item.url = `/watch/${item._id}`;
+          return item;
+        });
+        this.pageParams.total = res.total;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    getMovieListResHandle(res) {
+      this.movieList = res.data;
+      this.movieList = this.movieList.map((item) => {
+        item.url = `/watch/${item._id}`;
+        return item;
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss">

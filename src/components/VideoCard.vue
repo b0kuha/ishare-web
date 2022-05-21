@@ -1,18 +1,18 @@
 <template>
   <v-card
-    class="content-bg card mx-auto"
     :max-width="card.maxWidth"
-    flat
-    tile
-    router
     :to="video.url"
+    class="content-bg card mx-auto"
+    flat
+    router
+    tile
   >
-    <v-img :src="video.thumb" height="200px"></v-img>
+    <v-img :src="video.cover" height="200px"></v-img>
     <v-row no-gutters>
-      <v-col cols="2" v-if="card.type != 'noAvatar'">
-        <v-list-item class="pl-0 pt-3" router :to="channel.url">
+      <v-col v-if="card.type != 'noAvatar'" cols="2">
+        <v-list-item :to="channel.url" class="pl-0 pt-3" router>
           <v-list-item-avatar color="grey darken-3">
-            <v-img class="elevation-6" :src="channel.avatar"></v-img>
+            <v-img :src="video.user.avatar" class="elevation-6"></v-img>
           </v-list-item-avatar>
         </v-list-item>
       </v-col>
@@ -25,8 +25,10 @@
           {{ channel.name }}
         </v-card-subtitle>
         <v-card-subtitle class="pl-2 pt-0">
-          {{ video.views }} views<v-icon>mdi-circle-small</v-icon
-          >{{ video.createdAt }}
+          {{ video.views }} 次<v-icon>mdi-circle-small</v-icon
+          >{{
+            video.createdAt | parseTime("YYYY-MM-DD HH:mm:ss")
+          }}
         </v-card-subtitle>
       </v-col>
     </v-row>
@@ -38,15 +40,15 @@ export default {
   props: {
     video: {
       type: Object,
-      required: true
+      required: true,
     },
     channel: {
       type: Object,
-      required: true
+      required: true,
     },
-    card: Object
-  }
-}
+    card: Object,
+  },
+};
 </script>
 
 <style></style>

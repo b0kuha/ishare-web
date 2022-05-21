@@ -12,13 +12,11 @@
               <v-card class="transparent" flat>
                 <v-list-item three-line>
                   <v-list-item-avatar size="80"
-                    ><v-img
-                      src="https://randomuser.me/api/portraits/men/1.jpg"
-                    ></v-img
+                    ><v-img :src="avatar"></v-img
                   ></v-list-item-avatar>
                   <v-list-item-content class="align-self-auto">
                     <v-list-item-title class="headline mb-1"
-                      >Tech Reagan</v-list-item-title
+                      >TD</v-list-item-title
                     >
                     <v-list-item-subtitle
                       >1.06M subscribers
@@ -28,9 +26,9 @@
               </v-card>
             </v-col>
             <v-col cols="12" sm="5" md="3" lg="3">
-              <v-btn class="red white--text mt-6" tile large depressed
-                >Subscribed</v-btn
-              >
+              <v-btn class="red white--text mt-6" tile large depressed>
+                Subscribed
+              </v-btn>
               <v-btn icon class="ml-5 mt-6"><v-icon>mdi-bell</v-icon></v-btn>
             </v-col>
           </v-row>
@@ -68,29 +66,6 @@
                         :video="video"
                         :channel="channel"
                       ></video-card>
-                      <!-- <v-card class="content-bg card" max-width="250" flat tile>
-                        <v-img
-                          src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                          height="200px"
-                        ></v-img>
-                        <v-row no-gutters>
-                          <v-col>
-                            <v-card-title
-                              class="pl-2 pt-3 subtitle-1 font-weight-bold"
-                            >
-                              Top western road trips
-                            </v-card-title>
-
-                            <v-card-subtitle class="pl-2 pb-0">
-                              1,000 miles of wonder
-                            </v-card-subtitle>
-                            <v-card-subtitle class="pl-2 pt-0">
-                              9.6k views<v-icon>mdi-circle-small</v-icon>6 hours
-                              ago
-                            </v-card-subtitle>
-                          </v-col>
-                        </v-row>
-                      </v-card> -->
                     </v-skeleton-loader>
                   </v-slide-item>
                 </v-slide-group>
@@ -115,44 +90,6 @@
                         :video="video"
                         :channel="channel"
                       ></video-card>
-                      <!-- <v-card
-                        class="content-bg card mx-auto"
-                        max-width="350"
-                        flat
-                        tile
-                      >
-                        <v-img
-                          src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                          height="200px"
-                        ></v-img>
-                        <v-row no-gutters>
-                          <v-col cols="2">
-                            <v-list-item class="pl-0 pt-3">
-                              <v-list-item-avatar color="grey darken-3">
-                                <v-img
-                                  class="elevation-6"
-                                  src="https://randomuser.me/api/portraits/men/1.jpg"
-                                ></v-img>
-                              </v-list-item-avatar>
-                            </v-list-item>
-                          </v-col>
-                          <v-col>
-                            <v-card-title
-                              class="pl-2 pt-3 subtitle-1 font-weight-bold"
-                            >
-                              Top western road trips
-                            </v-card-title>
-
-                            <v-card-subtitle class="pl-2 pb-0">
-                              1,000 miles of wonder
-                            </v-card-subtitle>
-                            <v-card-subtitle class="pl-2 pt-0">
-                              9.6k views<v-icon>mdi-circle-small</v-icon>6 hours
-                              ago
-                            </v-card-subtitle>
-                          </v-col>
-                        </v-row>
-                      </v-card> -->
                     </v-skeleton-loader>
                   </v-col>
                 </v-row>
@@ -167,33 +104,37 @@
 </template>
 
 <script>
-import VideoCard from '@/components/VideoCard'
+import VideoCard from "@/components/VideoCard";
+import { mapGetters } from "vuex";
 export default {
   data: () => ({
     tab: null,
     loading: true,
-    items: ['Home', 'Videos', 'Playlists', 'Community', 'Channels', 'about'],
+    items: ["Home", "Videos", "Playlists", "Community", "Channels", "about"],
     video: {
-      url: '/watch/12',
-      thumb: 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
-      title: 'Top western road trips',
-      views: '9.6k',
-      createdAt: '6 hours ago'
+      url: "/watch/12",
+      thumb: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+      title: "测试标题",
+      views: "9.6k",
+      createdAt: "6 小时前",
     },
     channel: {
-      url: '/channels/12',
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
-    }
+      url: "/channels/12",
+      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    },
   }),
   components: {
-    VideoCard
+    VideoCard,
+  },
+  computed: {
+    ...mapGetters(["avatar"]),
   },
   mounted() {
     setTimeout(() => {
-      this.loading = false
-    }, 3000)
-  }
-}
+      this.loading = false;
+    }, 3000);
+  },
+};
 </script>
 
 <style>

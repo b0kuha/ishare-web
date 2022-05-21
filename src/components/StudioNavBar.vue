@@ -35,10 +35,10 @@
                 ><v-icon size="25" class="red--text small"
                   >mdi-video-plus</v-icon
                 >
-                Create</v-btn
+                创建</v-btn
               >
             </template>
-            <span>Create a video and more</span>
+            <span>创建视频或更多</span>
           </v-tooltip>
         </template>
         <v-list>
@@ -46,36 +46,40 @@
             <v-list-item-icon class="mr-3"
               ><v-icon>mdi-play-box-outline</v-icon></v-list-item-icon
             >
-            <v-list-item-title>Upload video</v-list-item-title>
+            <v-list-item-title>上传视频</v-list-item-title>
           </v-list-item>
           <v-list-item>
             <v-list-item-icon class="mr-3"
               ><v-icon>mdi-access-point</v-icon></v-list-item-icon
             >
-            <v-list-item-title>Go live</v-list-item-title>
+            <v-list-item-title>直播</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
 
       <v-menu offset-y left>
         <template v-slot:activator="{ on }">
-          <v-btn small color="red" depressed fab v-on="on" class="white--text">
-            T
-          </v-btn>
+          <v-avatar v-on="on" v-if="avatar">
+            <v-img :src="avatar"> </v-img>
+          </v-avatar>
+          <v-avatar
+            v-else
+            color="grey lighten-2 white--text"
+            @click="$router.push('/signin')"
+            >登录</v-avatar
+          >
         </template>
 
         <v-card>
           <v-list>
             <v-list-item>
               <v-list-item-avatar>
-                <img :src="`https://randomuser.me/api/portraits/men/4.jpg`" />
+                <img :src="avatar" />
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title>Tech Reagan</v-list-item-title>
-                <v-list-item-subtitle
-                  >techreagan@gmail.com</v-list-item-subtitle
-                >
+                <v-list-item-title>{{ name }}</v-list-item-title>
+                <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -87,19 +91,19 @@
               <v-list-item-icon>
                 <v-icon>mdi-account-box</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>Your channel</v-list-item-title>
+              <v-list-item-title>你的频道</v-list-item-title>
             </v-list-item>
             <v-list-item router to="/studio">
               <v-list-item-icon>
                 <v-icon>mdi-youtube-studio</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>VueTube Studio</v-list-item-title>
+              <v-list-item-title>iShare Studio</v-list-item-title>
             </v-list-item>
             <v-list-item router to="/signin">
               <v-list-item-icon>
                 <v-icon>mdi-login-variant</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>Sign out</v-list-item-title>
+              <v-list-item-title>退出</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card>
@@ -125,7 +129,7 @@
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title class=" font-weight-medium subtitle-2">{{
+              <v-list-item-title class="font-weight-medium subtitle-2">{{
                 item.title
               }}</v-list-item-title>
             </v-list-item-content>
@@ -151,7 +155,7 @@
               </v-list-item-icon>
 
               <v-list-item-content>
-                <v-list-item-title class=" font-weight-medium subtitle-2">{{
+                <v-list-item-title class="font-weight-medium subtitle-2">{{
                   item.title
                 }}</v-list-item-title>
               </v-list-item-content>
@@ -162,38 +166,24 @@
       <template v-slot:prepend>
         <div class="pa-2 text-center">
           <v-list class="text-center">
-            <v-list-item class="px-2">
-              <v-btn
-                height="95"
-                width="95"
-                href
-                x-large
-                color="red"
-                depressed
-                fab
-                to="/channels/222"
-                class="white--text mx-auto"
-              >
-                <h1 class="display-1">T</h1>
-              </v-btn>
+            <v-list-item class="px-2 justify-center">
+              <avatar size="75"></avatar>
             </v-list-item>
-
             <v-list-item link to="/channels/222">
               <v-list-item-content>
-                <v-list-item-title class="title">Tech Reagan</v-list-item-title>
-                <v-list-item-subtitle
-                  >techreagan1@gmail.com</v-list-item-subtitle
-                >
+                <v-list-item-title class="title">{{ name }}</v-list-item-title>
+                <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
         </div>
       </template>
     </v-navigation-drawer>
-    <upload-video-modal
+    <!-- <upload-video-modal
       :open-dialog="dialog"
       v-on:closeDialog="dialog = false"
-    />
+    /> -->
+    <upload-movie-modal :show.sync="dialog"></upload-movie-modal>
     <settings-modal
       :open-dialog="settingsDialog"
       v-on:closeDialog="settingsDialog = false"
@@ -202,99 +192,102 @@
 </template>
 
 <script>
-import UploadVideoModal from '@/components/UploadVideoModal'
-import SettingsModal from '@/components/SettingsModal'
+import UploadVideoModal from "@/components/UploadVideoModal";
+import SettingsModal from "@/components/SettingsModal";
+import { mapGetters } from "vuex";
+import UploadMovieModal from "./UploadMovieModal.vue";
+import Avatar from "./Avatar.vue";
 export default {
-  name: 'StudioNavBar',
+  name: "StudioNavBar",
   data: () => ({
     drawer: false,
     items: [
       {
-        header: 'scroll',
+        header: "scroll",
         pages: [
-          { title: 'Dashboard', link: '/studio', icon: 'mdi-view-dashboard' },
+          { title: "消息中心", link: "/studio", icon: "mdi-view-dashboard" },
           {
-            title: 'Videos',
-            link: '/studio/videos',
-            icon: 'mdi-play-box-multiple'
+            title: "内容",
+            link: "/studio/videos",
+            icon: "mdi-play-box-multiple",
           },
           {
-            title: 'Playlists',
-            link: '#p',
-            icon: 'mdi-playlist-play'
+            title: "播放列表",
+            link: "#p",
+            icon: "mdi-playlist-play",
           },
           {
-            title: 'Analytics',
-            link: '#a',
-            icon: 'mdi-poll-box'
+            title: "数据分析",
+            link: "#a",
+            icon: "mdi-poll-box",
           },
           {
-            title: 'Comments',
-            link: '#c',
-            icon: 'mdi-message-reply-text'
+            title: "评论",
+            link: "#c",
+            icon: "mdi-message-reply-text",
           },
 
           {
-            title: 'Subtitles',
-            link: '#s',
-            icon: 'mdi-subtitles'
+            title: "字幕",
+            link: "#s",
+            icon: "mdi-subtitles",
           },
           {
-            title: 'Monetization',
-            link: '#m',
-            icon: 'mdi-currency-usd'
+            title: "创收",
+            link: "#m",
+            icon: "mdi-currency-usd",
           },
           {
-            title: 'Audio library',
-            link: '#al',
-            icon: 'mdi-music-box-multiple'
-          }
-        ]
+            title: "音频库",
+            link: "#al",
+            icon: "mdi-music-box-multiple",
+          },
+        ],
       },
       {
-        header: 'fixed',
+        header: "fixed",
         pages: [
           {
-            title: 'Settings',
-            link: '',
-            icon: 'mdi-cog'
+            title: "设置",
+            link: "",
+            icon: "mdi-cog",
           },
           {
-            title: 'Send feedback',
-            link: '#sf',
-            icon: 'mdi-history'
+            title: "发送反馈",
+            link: "#sf",
+            icon: "mdi-history",
           },
-          {
-            title: 'Creator Studio Classic',
-            link: '#cs',
-            icon: 'mdi-play-box-outline'
-          }
-        ]
-      }
+        ],
+      },
     ],
     dialog: false,
-    settingsDialog: false
+    settingsDialog: false,
   }),
+  computed: {
+    ...mapGetters(["avatar", "email", "name"]),
+  },
   methods: {
     search() {
-      console.log('hello')
+      console.log("hello");
     },
     modal() {
-      this.dialog = true
+      this.dialog = true;
     },
     settingsMoal(title) {
-      if (title !== 'Settings') return
-      this.settingsDialog = true
-    }
+      if (title !== "Settings") return;
+      this.settingsDialog = true;
+    },
   },
   components: {
     UploadVideoModal,
-    SettingsModal
+    SettingsModal,
+    UploadMovieModal,
+    Avatar,
   },
   mounted() {
-    this.drawer = this.$vuetify.breakpoint.mdAndDown ? false : true
-  }
-}
+    this.drawer = this.$vuetify.breakpoint.mdAndDown ? false : true;
+  },
+};
 </script>
 
 <style lang="scss">
